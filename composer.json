@@ -1,0 +1,21 @@
+{
+  "name": "vendor_name/fr_web",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "olehRadchenko",
+      "email": "email@example.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "Ocore\\": "core/",
+      "App\\": "app/"
+    }
+  },
+  "require": {
+    "symfony/var-dumper": "^8.0"
+  }
+}
