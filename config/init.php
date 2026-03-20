@@ -8,5 +8,6 @@ const CORE = ROOT . '/core';
 const HELPERS = ROOT . '/helpers';
 const CONFIG = ROOT . '/config';
 const VIEWS = APP . '/Views';
+const LAYOUTS = VIEWS . '/layouts';
 
 const DEFAULT_LAYOUT = 'defaultLayout';

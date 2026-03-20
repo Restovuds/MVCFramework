@@ -40,7 +40,7 @@ class Router
             $this->response->setStatusCode(404);
             return view('errors/error', [
                 'code' => 404, 'title' => 'Page not found', 'message' => 'Sorry, the page you are looking for does not exist.'
-            ]);
+            ], 'errorLayout');
         };
         if (is_array($handler)) {
             $handler[0] = new $handler[0];

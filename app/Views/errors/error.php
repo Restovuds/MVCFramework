@@ -7,17 +7,15 @@
  */
 
 ?>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= $code ?> - <?= $title ?></title>
-</head>
-<body>
-<h1><?= $code ?> - <?= $title ?></h1>
-<p><?= $message ?></p>
-</body>
-</html>
-
-
+<h1>
+    <?= $title ?>
+    <span class="badge rounded-pill text-bg-danger">
+        <?= $code ?>
+    </span>
+</h1>
+<div class="alert alert-danger d-flex align-items-center" role="alert">
+    <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
+    <div>
+        <?= $message ?>
+    </div>
+</div>
