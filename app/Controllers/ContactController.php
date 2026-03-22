@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\Contact;
 use Ocore\BaseController;
 
 class ContactController extends BaseController
@@ -16,8 +17,10 @@ class ContactController extends BaseController
 
     public function send()
     {
-        dump(request()->getData());
-        dump($_POST);
+        $model = new Contact();
+        dump($model);
+        $model->load();
+        dump($model);
         echo 'Contact Form POST Page';
     }
 }
