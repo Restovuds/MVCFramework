@@ -12,13 +12,12 @@ class ContactController extends BaseController
         $name = 'Oleh';
 
         return view('contact', compact('title', 'name'));
-//        return view()->render('contact');
-//        return $this->render('contact.php');
-//        return app()->view->render('contact');
     }
 
     public function send()
     {
+        dump(request()->getData());
+        dump($_POST);
         echo 'Contact Form POST Page';
     }
 }

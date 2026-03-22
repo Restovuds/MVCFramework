@@ -11,3 +11,5 @@ const VIEWS = APP . '/Views';
 const LAYOUTS = VIEWS . '/layouts';
 
 const DEFAULT_LAYOUT = 'defaultLayout';
+
+const SITE_PATH = 'http://fr.local';

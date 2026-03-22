@@ -4,8 +4,8 @@ namespace Ocore;
 
 class Request
 {
-    private const string METHOD_POST = 'POST';
-    private const string METHOD_GET = 'GET';
+    public const string METHOD_POST = 'POST';
+    public const string METHOD_GET = 'GET';
 
     public string $uri;
 
@@ -35,8 +35,35 @@ class Request
         return '';
     }
 
+    public function isGet():bool
+    {
+        return self::METHOD_GET == $this->getMethod();
+    }
+
+    public function isPost():bool
+    {
+        return self::METHOD_POST == $this->getMethod();
+    }
+
     public function get($name, $default = null): null|string
     {
         return $_GET[$name] ?? $default;
+    }
+
+    public function post($name = null, $default = null): null|string
+    {
+        return $_POST[$name] ?? $default;
+    }
+
+    public function getData(): array
+    {
+        $data = [];
+
+        $request_data = $this->isGet() ? $_GET : $_POST;
+        foreach ($request_data as $k => $v) {
+            $data[$k] = trim($v);
+        }
+
+        return $data;
     }
 }
