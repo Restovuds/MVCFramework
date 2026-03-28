@@ -12,7 +12,8 @@
   "autoload": {
     "psr-4": {
       "Ocore\\": "core/",
-      "App\\": "app/"
+      "App\\": "app/",
+      "helpers\\": "helpers/"
     }
   },
   "require": {

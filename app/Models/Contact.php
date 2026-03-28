@@ -8,6 +8,7 @@ use Ocore\Validators;
 class Contact extends \Ocore\BaseModel
 {
     public array $fillable = ['fullName', 'email', 'content', 'username'];
+    public array $attributeLabels = ['fullName' => 'Full Name', 'email' => 'Email', 'content' => 'Comment', 'username' => 'Username'];
 
     public array $rules = [
         'fullName' => [Validators::REQUIRED],

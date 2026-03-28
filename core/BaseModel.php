@@ -8,6 +8,7 @@ abstract class BaseModel
     public array $attributes = [];
 
     public array $rules = [];
+    public array $attributeLabels = [];
 
     protected array $errors = [];
 
@@ -44,11 +45,7 @@ abstract class BaseModel
             }
         }
 
-        if (!empty($this->errors)) {
-            return false;
-        }
-
-        return true;
+        return $this->hasErrors();
     }
 
     protected function checkValidator(array $field): void
@@ -59,14 +56,41 @@ abstract class BaseModel
             }
             if (in_array($ruleName, array_keys(Validators::VALIDATORS_MAP))) {
                 if (!call_user_func_array([$this, Validators::VALIDATORS_MAP[$ruleName]], [$field['value'], $ruleValue])) {
-                    $this->errors[$field['attribute']][] = str_replace(
+                    $this->addError($field['attribute'], str_replace(
                         [':attribute:', ':value:'],
-                        [$field['attribute'], $ruleValue],
+                        [$this->getAttributeLabel($field['attribute']), $ruleValue],
                         $this->errorMessages[$ruleName]
-                    );
+                    ));
                 }
             }
         }
+    }
+
+    public function getAttributeLabel($attribute): string
+    {
+        return $this->attributeLabels[$attribute] ?? $attribute;
+    }
+
+    public function addError(string $attribute, string $message): void
+    {
+        $this->errors[$attribute][] = $message;
+    }
+
+    public function getErrors(): array
+    {
+        return $this->errors;
+    }
+
+    public function getErrorsAsArray(): array
+    {
+        return array_map(function ($messages) {
+            return implode(', ', $messages);
+        }, $this->errors);
+    }
+
+    public function hasErrors(): bool
+    {
+        return !empty($this->errors);
     }
 
     protected function requiredValidator(mixed $value, $ruleValue = null): bool

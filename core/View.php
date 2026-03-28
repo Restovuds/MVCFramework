@@ -12,7 +12,7 @@ class View
         $this->layout = $layout;
     }
 
-    public function render(string $view, array $data = [], $layout = null): string
+    public function render(string $view, array $data = [], $layout = null): string|View
     {
         extract($data);
         $view = str_contains($view, '.php') ? $view : "$view.php";
@@ -22,10 +22,7 @@ class View
             require $viewFile;
             $this->content = ob_get_clean();
         } else {
-            app()->response->setStatusCode(500);
-            return view('errors/error', [
-                'code' => 500, 'title' => 'Internal Server Error', 'message' => 'Sorry, something went wrong.'
-            ], 'errorLayout');
+            abort(500, null ,"View $view not found");
         }
 
         if (false === $layout) {
@@ -41,10 +38,9 @@ class View
             require_once $layoutFile;
             return ob_get_clean();
         } else {
-            app()->response->setStatusCode(500);
-            return view('errors/error', [
-                'code' => 500, 'title' => 'Internal Server Error', 'message' => 'Sorry, something went wrong.'
-            ], false);
+            abort(500, null, "Layout $layoutFileName not found");
         }
+
+        return '';
     }
 }

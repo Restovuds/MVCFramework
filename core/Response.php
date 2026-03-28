@@ -16,4 +16,16 @@ class Response
     {
         return $this->statusCode;
     }
+
+    public function redirect(string $url = ''): never
+    {
+        if ($url) {
+            $redirect = $url;
+        } else {
+            $redirect = $_SERVER['HTTP_REFERER'] ?? base_url();
+        }
+
+        header("Location: $redirect");
+        die;
+    }
 }

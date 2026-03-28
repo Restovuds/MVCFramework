@@ -37,10 +37,7 @@ class Router
         $path = $this->request->getPath();
         $method = $this->request->getMethod();
         $handler = $this->routes[$method]["/$path"] ?? function () {
-            $this->response->setStatusCode(404);
-            return view('errors/error', [
-                'code' => 404, 'title' => 'Page not found', 'message' => 'Sorry, the page you are looking for does not exist.'
-            ], 'errorLayout');
+            abort();
         };
         if (is_array($handler)) {
             $handler[0] = new $handler[0];
