@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use App\Models\Contact;
-use Ocore\BaseController;
 
 class ContactController extends BaseController
 {
@@ -12,8 +11,7 @@ class ContactController extends BaseController
 
     public function index()
     {
-        $title = 'Contact Page';
-        return view('contact', ['title' => self::DEFAULT_TITLE]);
+        return view('contact/index', ['title' => self::DEFAULT_TITLE]);
     }
 
     public function send()

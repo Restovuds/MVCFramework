@@ -83,3 +83,8 @@ function abort(int $code = 404, string|null $error = null, string|null $message 
     ], 'errorLayout');
     die;
 }
+
+function db(): \Ocore\Database
+{
+    return app()->db;
+}

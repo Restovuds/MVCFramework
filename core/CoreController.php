@@ -2,7 +2,7 @@
 
 namespace Ocore;
 
-abstract class BaseController
+abstract class CoreController
 {
     public function render(string $view, array $data = [], $layout = null): string
     {

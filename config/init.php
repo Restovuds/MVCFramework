@@ -10,6 +10,21 @@ const CONFIG = ROOT . '/config';
 const VIEWS = APP . '/Views';
 const LAYOUTS = VIEWS . '/layouts';
 
+const DEBUG = true;
+
 const DEFAULT_LAYOUT = 'defaultLayout';
 
 const SITE_PATH = 'http://fr.local';
+
+const DB = [
+    'db_host' => 'db',
+    'db_port' => 3306,
+    'username' => 'user',
+    'user_password' => 'user',
+    'db_name' => 'fr',
+    'charset' => 'utf8mb4',
+    'options' => [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    ],
+];

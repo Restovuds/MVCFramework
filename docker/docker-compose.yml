@@ -7,10 +7,12 @@ services:
     ports:
       - "80:80"
     volumes:
-      - ../../projects/fr.php8.4/fr_web/:/var/www/html
+      - ../:/var/www/html
       - ./apache/vhost.conf:/etc/apache2/sites-available/000-default.conf
     depends_on:
       - db
+    networks:
+      - app_network
     restart: unless-stopped
 
   db:
@@ -25,7 +27,24 @@ services:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
+    networks:
+      - app_network
+    restart: unless-stopped
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - app_network
     restart: unless-stopped
 
 volumes:
   db_data:
+
+networks:
+  app_network:
+    driver: bridge
