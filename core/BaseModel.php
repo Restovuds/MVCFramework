@@ -4,6 +4,7 @@ namespace Ocore;
 
 abstract class BaseModel
 {
+    public string $table = '';
     public array $fillable = [];
     public array $attributes = [];
 
@@ -18,6 +19,36 @@ abstract class BaseModel
         Validators::MAX => ':attribute: must be at most :value: characters long',
         Validators::EMAIL => ':attribute: must be a valid email address',
     ];
+
+    public function save($runValidation = true): false|string
+    {
+        if($runValidation && !$this->validate()) {
+            return false;
+        }
+
+        // fields
+        $fields = implode(
+            ', ',
+            array_map(
+                fn($i) => "`{$i}`",
+                array_keys($this->attributes)
+            )
+        );
+
+        // values
+        $placeholders = implode(
+            ', ',
+            array_map(
+                fn($i) => ":{$i}",
+                array_keys($this->attributes)
+            )
+        );
+
+        $query = "INSERT INTO {$this->table} ({$fields}) VALUES ({$placeholders})";
+        db()->query($query, $this->attributes);
+
+        return db()->getInsertId();
+    }
 
     public function load(): bool
     {
@@ -45,7 +76,7 @@ abstract class BaseModel
             }
         }
 
-        return $this->hasErrors();
+        return !$this->hasErrors();
     }
 
     protected function checkValidator(array $field): void

@@ -26,6 +26,7 @@ class Database
         try {
             $this->connection = new PDO($dsn, $user, $pass, $options);
         } catch (\PDOException $e) {
+            error_log("[". date('Y-m-d H:i:s') ."] DB ERROR: {$e->getMessage()}" . PHP_EOL, 3, ERROR_LOG_PATH);
             if (DEBUG) {
                 abort(500, null, "Connection failed: " . $e->getMessage());
             } else {
@@ -42,6 +43,7 @@ class Database
             $this->statement = $this->connection->prepare($query);
             $this->statement->execute($params);
         } catch (\PDOException $e) {
+            error_log("[". date('Y-m-d H:i:s') ."] DB ERROR: {$e->getMessage()}" . PHP_EOL, 3, ERROR_LOG_PATH);
             if (DEBUG) {
                 abort(500, null, "Query failed: " . $e->getMessage());
             } else {
@@ -56,7 +58,7 @@ class Database
         return $this->statement->fetchAll();
     }
 
-    public function findAll(string $tableName): array
+    public function findAll(string $tableName): array|false
     {
         return $this->query("SELECT * FROM $tableName")->asArray();
     }
@@ -74,5 +76,10 @@ class Database
             abort(404, $failTitle, $failText);
         }
         return $result;
+    }
+
+    public function getInsertId(): false|string
+    {
+        return $this->connection->lastInsertId();
     }
 }

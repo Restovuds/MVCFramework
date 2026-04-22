@@ -9,6 +9,7 @@ const HELPERS = ROOT . '/helpers';
 const CONFIG = ROOT . '/config';
 const VIEWS = APP . '/Views';
 const LAYOUTS = VIEWS . '/layouts';
+const ERROR_LOG_PATH = ROOT . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'runtime-errors.log';
 
 const DEBUG = true;
 

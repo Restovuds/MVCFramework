@@ -45,6 +45,9 @@ use Ocore\View;
                 <li class="nav-item">
                     <a class="nav-link" href="<?= base_url('/contact'); ?>">Contact Us</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?= base_url('/posts/create'); ?>">Create Post</a>
+                </li>
             </ul>
         </div>
     </div>
