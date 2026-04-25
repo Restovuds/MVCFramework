@@ -15,18 +15,18 @@
                 <div class="mb-3">
                     <label for="title" class="form-label">Title</label>
                     <input type="text"
-                           class="<?= mergeClasses(['form-control', getBootstrapValidationClass('title', $errors ?? [], false)]) ?>"
+                           class="<?= merge_classes(['form-control', get_bootstrap_validation_class('title', $errors ?? [], false)]) ?>"
                            name="title" id="title" placeholder="Some interesting theme" value="<?= old('title') ?>">
-                    <?= getError('title', $errors ?? []); ?>
+                    <?= get_error('title', $errors ?? []); ?>
                 </div>
 
                 <div class="mb-3">
                     <label for="content" class="form-label">Content</label>
                     <textarea name="content"
-                              class="<?= mergeClasses(['form-control', getBootstrapValidationClass('content', $errors ?? [], false)]) ?>"
+                              class="<?= merge_classes(['form-control', get_bootstrap_validation_class('content', $errors ?? [], false)]) ?>"
                               id="content" rows="3"
                               placeholder="Who is a king of the north?"><?= old('content') ?></textarea>
-                    <?= getError('content', $errors ?? []); ?>
+                    <?= get_error('content', $errors ?? []); ?>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Submit</button>

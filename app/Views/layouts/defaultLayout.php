@@ -20,6 +20,7 @@ use Ocore\View;
     <title><?= $title ?? 'Page'; ?></title>
 
     <link rel="stylesheet" href="<?= base_url('/assets/bootstrap/css/bootstrap.min.css'); ?>">
+    <link rel="stylesheet" href="<?= base_url('/assets/css/default-style.css'); ?>">
     <link rel="icon" href="<?= base_url('/images/Ocore.png'); ?>" type="image/x-icon">
 <!--    <a href="https://www.flaticon.com/free-icons/letter-o" title="letter o icons">Letter o icons created by shohanur.rahman13 - Flaticon</a>-->
 </head>
@@ -54,6 +55,10 @@ use Ocore\View;
 </nav>
 
 <?= $this->content; ?>
+
+<div class="container my-2 portal">
+    <?php get_alerts(); ?>
+</div>
 
 <script src="<?= base_url('/assets/bootstrap/js/bootstrap.bundle.js'); ?>"></script>
 </body>

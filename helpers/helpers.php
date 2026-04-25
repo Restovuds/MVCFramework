@@ -1,6 +1,7 @@
 <?php
 
 use helpers\ErrorHelper;
+use JetBrains\PhpStorm\NoReturn;
 
 function app(): \Ocore\Application
 {
@@ -33,17 +34,17 @@ function response(): \Ocore\Response
     return app()->response;
 }
 
-function specChars($string): string
+function spec_chars($string): string
 {
     return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
 }
 
 function old($fieldName): string|null
 {
-    return isset($_POST[$fieldName]) ? specChars($_POST[$fieldName]) : null;
+    return isset($_POST[$fieldName]) ? spec_chars($_POST[$fieldName]) : null;
 }
 
-function getError($fieldName, $errors = []): string|null
+function get_error($fieldName, $errors = []): string|null
 {
     if (isset($errors[$fieldName])) {
         return '<div class="invalid-feedback d-block">' . $errors[$fieldName] . '</div>';
@@ -51,7 +52,7 @@ function getError($fieldName, $errors = []): string|null
     return null;
 }
 
-function getBootstrapValidationClass($fieldName, $errors = [], $shouldReturnValidClass = true): string|null
+function get_bootstrap_validation_class($fieldName, $errors = [], $shouldReturnValidClass = true): string|null
 {
     $validClass = $shouldReturnValidClass ? 'is-valid' : null;
     $invalidClass = 'is-invalid';
@@ -63,11 +64,12 @@ function getBootstrapValidationClass($fieldName, $errors = [], $shouldReturnVali
     return isset($errors[$fieldName]) ? $invalidClass : $validClass;
 }
 
-function mergeClasses($classes = []): string
+function merge_classes($classes = []): string
 {
     return implode(' ', $classes);
 }
 
+#[NoReturn]
 function abort(int $code = 404, string|null $error = null, string|null $message = null): \Ocore\View
 {
     if (is_null($error)) {
@@ -87,4 +89,14 @@ function abort(int $code = 404, string|null $error = null, string|null $message 
 function db(): \Ocore\Database
 {
     return app()->db;
+}
+
+function session(): Ocore\Session
+{
+    return app()->session;
+}
+
+function get_alerts()
+{
+    \Ocore\helpers\FlashHelper::get_alerts();
 }

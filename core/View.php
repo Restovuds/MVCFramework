@@ -15,14 +15,13 @@ class View
     public function render(string $view, array $data = [], $layout = null): string|View
     {
         extract($data);
-        $view = str_contains($view, '.php') ? $view : "$view.php";
-        $viewFile = VIEWS . DIRECTORY_SEPARATOR . $view;
+        $viewFile = self::getPath(fileName: $view, const: VIEWS);
         if (is_file($viewFile)) {
             ob_start();
             require $viewFile;
             $this->content = ob_get_clean();
         } else {
-            abort(500, null ,"View $view not found");
+            abort(code: 500, message: "View $view not found");
         }
 
         if (false === $layout) {
@@ -30,17 +29,33 @@ class View
         }
 
         $layoutFileName = $layout ?: $this->layout;
-        $includeExtension = !str_contains($layoutFileName, '.php');
-        $layoutFile = LAYOUTS . DIRECTORY_SEPARATOR . (!$includeExtension ? $layoutFileName : "$layoutFileName.php");
+        $layoutFile = self::getPath(fileName: $layoutFileName, const: LAYOUTS);
 
         if (is_file($layoutFile)) {
             ob_start();
             require_once $layoutFile;
             return ob_get_clean();
         } else {
-            abort(500, null, "Layout $layoutFileName not found");
+            abort(code: 500, message: "Layout $layoutFileName not found");
         }
+    }
 
-        return '';
+    public function renderPartial(string $view, array $data = []): string
+    {
+        extract($data);
+        $viewFile = self::getPath(fileName: $view, const: VIEWS);
+        if (is_file($viewFile)) {
+            require $viewFile;
+        }
+        return ""; // it is not necessary to return anything in that case
+    }
+
+    // --------------
+    // static methods
+    // --------------
+    protected static function getPath(string $fileName, string $const): string
+    {
+        $file = str_contains($fileName, '.php') ? $fileName : "{$fileName}.php";
+        return $const . DIRECTORY_SEPARATOR . $file;
     }
 }

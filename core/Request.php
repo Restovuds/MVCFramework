@@ -50,8 +50,11 @@ class Request
         return $_GET[$name] ?? $default;
     }
 
-    public function post($name = null, $default = null): null|string
+    public function post($name = null, $default = null): null|array|string
     {
+        if (is_null($name)) {
+            return $_POST;
+        }
         return $_POST[$name] ?? $default;
     }
 

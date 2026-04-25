@@ -10,6 +10,7 @@ class Application
     public Router $router;
     public View $view;
     public Database $db;
+    public Session $session;
     public static Application $app;
 
     public function __construct()
@@ -21,6 +22,7 @@ class Application
         $this->router = new Router($this->request, $this->response);
         $this->view = new View(DEFAULT_LAYOUT);
         $this->db = new Database();
+        $this->session = new Session();
     }
 
     public function run()

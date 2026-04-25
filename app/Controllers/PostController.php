@@ -2,8 +2,8 @@
 
 namespace App\Controllers;
 
-use App\Controllers\BaseController;
 use App\Models\Post;
+use Ocore\helpers\FlashHelper;
 
 class PostController extends BaseController
 {
@@ -17,11 +17,16 @@ class PostController extends BaseController
         $model = new Post();
         $model->load();
 
-        if (!$model->save()) {
+        if (!$model->validate()) {
             return $this->render(view: 'posts/create', data: ['title' => 'Create Post', 'errors' => $model->getErrorsAsArray()]);
         }
 
-        return "POST CREATED";
+        if ($id = $model->save()) {
+            FlashHelper::createSuccessAlert("Post {$id} created");
+        } else {
+            FlashHelper::createErrorAlert("Create post failed");
+        }
+        response()->redirect('/posts/create');
     }
 
 }

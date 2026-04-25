@@ -11,6 +11,8 @@ class SiteController extends BaseController
 //        $posts = db()->findOne('post', 2);
 //        $posts = db()->findOrFail('post', 3, 'Post not found', 'Please try again later');
 //        dd($posts);
+
+//        session()->set('name', 'John Doe');
         return view('site/index', ['title' => 'Home Page']);
     }
 }
