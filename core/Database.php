@@ -82,4 +82,9 @@ class Database
     {
         return $this->connection->lastInsertId();
     }
+
+    public function affectedRows(): int
+    {
+        return $this->statement->rowCount();
+    }
 }

@@ -64,7 +64,7 @@ function get_bootstrap_validation_class($fieldName, $errors = [], $shouldReturnV
     return isset($errors[$fieldName]) ? $invalidClass : $validClass;
 }
 
-function merge_classes($classes = []): string
+function merge_classes(...$classes): string
 {
     return implode(' ', $classes);
 }

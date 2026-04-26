@@ -4,7 +4,6 @@ namespace Ocore;
 
 abstract class BaseModel
 {
-    public string $table = '';
     public array $fillable = [];
     public array $attributes = [];
 
@@ -12,6 +11,11 @@ abstract class BaseModel
     public array $attributeLabels = [];
 
     protected array $errors = [];
+
+    public static function tableName(): string
+    {
+        return '';
+    }
 
     protected array $errorMessages = [
         Validators::REQUIRED => ':attribute: is required',
@@ -44,10 +48,29 @@ abstract class BaseModel
             )
         );
 
-        $query = "INSERT INTO {$this->table} ({$fields}) VALUES ({$placeholders})";
+        $query = "INSERT INTO {$this::tableName()} ({$fields}) VALUES ({$placeholders})";
         db()->query($query, $this->attributes);
 
         return db()->getInsertId();
+    }
+
+    public function update(): bool
+    {
+        if (!isset($this->attributes['id'])) {
+            return false;
+        }
+
+        $fields = '';
+        foreach ($this->attributes as $f => $v) {
+            if ($f === 'id') {
+                continue;
+            }
+            $fields .= "`{$f}`=:{$f},";
+        }
+        $fields = rtrim($fields, ',');
+
+        $query = "UPDATE {$this::tableName()} SET {$fields} WHERE id=:id";
+        return !!db()->query($query, $this->attributes);
     }
 
     public function load(): bool
@@ -118,6 +141,19 @@ abstract class BaseModel
             return implode(', ', $messages);
         }, $this->errors);
     }
+
+    public function getErrorsAsHtml(): string
+    {
+        $output = '<ul class="list-unstyled">';
+        foreach ($this->errors as $fieldErrors) {
+            foreach ($fieldErrors as $error) {
+                $output .= "<li>{$error}</li>";
+            }
+        }
+        $output .= '</ul>';
+        return $output;
+    }
+
 
     public function hasErrors(): bool
     {

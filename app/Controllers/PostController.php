@@ -26,7 +26,42 @@ class PostController extends BaseController
         } else {
             FlashHelper::createErrorAlert("Create post failed");
         }
+
         response()->redirect('/posts/create');
+    }
+
+    public function edit(): string
+    {
+        $id = request()->get('id');
+        $post = db()->findOrFail(Post::tableName(), $id);
+        return $this->render(view: 'posts/edit', data: ['title' => 'Edit Post', 'post' => $post]);
+    }
+
+    public function update()
+    {
+        $id = request()->post('id');
+        $post = db()->findOrFail(Post::tableName(), $id);
+        if (!$post) {
+            FlashHelper::createErrorAlert("Post not found");
+            response()->redirect('/');
+        }
+
+        $model = new Post();
+        $model->load();
+        $model->attributes['id'] = $id;
+
+        if (!$model->validate()) {
+            FlashHelper::createErrorAlert($model->getErrorsAsHtml());
+            response()->redirect("/posts/edit?id={$id}");
+        }
+
+        if ($model->update()) {
+            FlashHelper::createSuccessAlert("Post {$id} saved");
+            response()->redirect('/' );
+        } else {
+            FlashHelper::createErrorAlert("Error updating the {$id} post");
+            response()->redirect("/posts/edit?id={$id}");
+        }
     }
 
 }
