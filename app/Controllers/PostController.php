@@ -40,11 +40,7 @@ class PostController extends BaseController
     public function update()
     {
         $id = request()->post('id');
-        $post = db()->findOrFail(Post::tableName(), $id);
-        if (!$post) {
-            FlashHelper::createErrorAlert("Post not found");
-            response()->redirect('/');
-        }
+        db()->findOrFail(Post::tableName(), $id);
 
         $model = new Post();
         $model->load();
@@ -57,11 +53,25 @@ class PostController extends BaseController
 
         if ($model->update()) {
             FlashHelper::createSuccessAlert("Post {$id} saved");
-            response()->redirect('/' );
+            response()->redirect("/");
         } else {
             FlashHelper::createErrorAlert("Error updating the {$id} post");
             response()->redirect("/posts/edit?id={$id}");
         }
     }
 
+    public function delete()
+    {
+        $id = request()->get('id');
+        db()->findOrFail(Post::tableName(), $id);
+        $model = new Post();
+
+        if(!$model->delete($id)) {
+            FlashHelper::createErrorAlert("Error deleting the {$id} post");
+        } else {
+            FlashHelper::createSuccessAlert("Post {$id} deleted");
+        }
+
+        response()->redirect("/");
+    }
 }

@@ -102,6 +102,13 @@ abstract class BaseModel
         return !$this->hasErrors();
     }
 
+    public function delete(int $id): bool
+    {
+        $query = "DELETE FROM {$this::tableName()} WHERE id=:id";
+        db()->query($query, compact('id'));
+        return !!db()->affectedRows();
+    }
+
     protected function checkValidator(array $field): void
     {
         foreach ($field['rules'] as $ruleName => $ruleValue) {

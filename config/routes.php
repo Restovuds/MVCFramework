@@ -15,3 +15,4 @@ $app->router->get('/posts/create', [App\Controllers\PostController::class, 'crea
 $app->router->post('/posts/store', [App\Controllers\PostController::class, 'store']);
 $app->router->get('/posts/edit', [App\Controllers\PostController::class, 'edit']);
 $app->router->post('/posts/update', [App\Controllers\PostController::class, 'update']);
+$app->router->get('/posts/delete', [App\Controllers\PostController::class, 'delete']);
