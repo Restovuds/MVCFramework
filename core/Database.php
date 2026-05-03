@@ -10,6 +10,8 @@ class Database
     protected PDO $connection;
     protected PDOStatement $statement;
 
+    protected array $queries = [];
+
     public function __construct()
     {
         $host = DB['db_host'];
@@ -42,6 +44,13 @@ class Database
         try {
             $this->statement = $this->connection->prepare($query);
             $this->statement->execute($params);
+
+            if (DEBUG) {
+                ob_start();
+                $this->statement->debugDumpParams();
+                $this->queries[] = ob_get_clean();
+            }
+
         } catch (\PDOException $e) {
             error_log("[". date('Y-m-d H:i:s') ."] DB ERROR: {$e->getMessage()}" . PHP_EOL, 3, ERROR_LOG_PATH);
             if (DEBUG) {
@@ -86,5 +95,25 @@ class Database
     public function affectedRows(): int
     {
         return $this->statement->rowCount();
+    }
+
+    /**
+     * @return array
+     */
+    public function getQueries(): array
+    {
+        $res = [];
+        foreach ($this->queries as $index => $query) {
+            $line = strtok($query, PHP_EOL);
+
+            while (false !== $line) {
+                if (str_contains($line, 'SQL:') || str_contains($line, 'Sent SQL:')) {
+                    $res[$index][] = $line;
+                }
+                $line = strtok(PHP_EOL);
+            }
+        }
+
+        return $res;
     }
 }

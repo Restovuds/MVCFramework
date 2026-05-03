@@ -61,5 +61,10 @@ use Ocore\View;
 </div>
 
 <script src="<?= base_url('/assets/bootstrap/js/bootstrap.bundle.js'); ?>"></script>
+
+<?php if(DEBUG): ?>
+    <?php dump(db()->getQueries()); ?>
+<?php endif; ?>
+
 </body>
 </html>
