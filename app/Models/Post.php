@@ -21,7 +21,7 @@ class Post extends BaseModel
             [['title', 'slug'], ValidatorFactory::VALIDATOR_STRING, 'min' => 5, 'max' => 255],
             [['content'], ValidatorFactory::VALIDATOR_STRING, 'min' => 20, 'max' => 1000],
             [['slug'], ValidatorFactory::VALIDATOR_UNIQUE, 'message' => 'This slug has already been taken.'],
-            [['slug'], ValidatorFactory::VALIDATOR_SLUG, 'message' => 'The slug pattern is :slugPattern:', 'messageConfig' => [':slugPattern:' => 'a-z0-9-']],
+            [['slug'], ValidatorFactory::VALIDATOR_SLUG, 'message' => 'The slug pattern is :slugPattern:', 'messageConfig' => [':slugPattern:' => '/^[a-z0-9-]+$/']],
         ];
     }
 
