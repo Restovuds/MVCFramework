@@ -23,6 +23,14 @@
                 </div>
 
                 <div class="mb-3">
+                    <label for="slug" class="form-label">Slug</label>
+                    <input type="text"
+                           class="<?= merge_classes('form-control', get_bootstrap_validation_class('slug', $errors ?? [], false)) ?>"
+                           name="slug" id="slug" placeholder="Some interesting theme" value="<?= isset($errors) ? old('slug') : spec_chars($post['slug']) ?>">
+                    <?= get_error('slug', $errors ?? []); ?>
+                </div>
+
+                <div class="mb-3">
                     <label for="content" class="form-label">Content</label>
                     <textarea name="content"
                               class="<?= merge_classes('form-control', get_bootstrap_validation_class('content', $errors ?? [], false)) ?>"

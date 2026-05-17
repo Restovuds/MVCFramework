@@ -7,12 +7,12 @@ use Ocore\helpers\FlashHelper;
 
 class PostController extends BaseController
 {
-    public function create(): string
+    public function actionCreate(): string
     {
         return $this->render(view: 'posts/create', data: ['title' => 'Create Post']);
     }
 
-    public function store(): string
+    public function actionStore(): string
     {
         $model = new Post();
         $model->load();
@@ -30,14 +30,14 @@ class PostController extends BaseController
         response()->redirect('/posts/create');
     }
 
-    public function edit(): string
+    public function actionEdit(): string
     {
         $id = request()->get('id');
         $post = db()->findOrFail(Post::tableName(), $id);
         return $this->render(view: 'posts/edit', data: ['title' => 'Edit Post', 'post' => $post]);
     }
 
-    public function update()
+    public function actionUpdate(): void
     {
         $id = request()->post('id');
         db()->findOrFail(Post::tableName(), $id);
@@ -60,7 +60,7 @@ class PostController extends BaseController
         }
     }
 
-    public function delete()
+    public function actionDelete(): void
     {
         $id = request()->get('id');
         db()->findOrFail(Post::tableName(), $id);
@@ -75,7 +75,7 @@ class PostController extends BaseController
         response()->redirect("/");
     }
 
-    public function view()
+    public function actionView(): string
     {
         $slug = router()->getRootParam('slug', false);
         if (!$slug) {

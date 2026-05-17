@@ -27,10 +27,11 @@ abstract class BaseValidator
     public function getErrorMessage($attribute, $value): string
     {
         $message = $this->config['message'] ?? $this->errorMessage;
+        $messageParams = $this->config['messageConfig'] ?? [];
 
         return str_replace(
-            [':attribute:', ':value:'],
-            [$this->model->getAttributeLabel($attribute), $value],
+            array_merge([':attribute:', ':value:'], array_keys($messageParams)),
+            array_merge([$this->model->getAttributeLabel($attribute), $value], array_values($messageParams)),
             $message
         );
     }

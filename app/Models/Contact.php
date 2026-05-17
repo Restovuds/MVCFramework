@@ -2,13 +2,25 @@
 
 namespace App\Models;
 
-class Contact extends \Ocore\BaseModel
+use Ocore\BaseModel;
+use Ocore\validation\ValidatorFactory;
+
+class Contact extends BaseModel
 {
     public array $fillable = ['fullName', 'email', 'content', 'username'];
 
     public static function tableName(): string
     {
         return 'contact';
+    }
+
+    public function getRules(): array
+    {
+        return [
+            [['fullName', 'email'], ValidatorFactory::VALIDATOR_REQUIRED],
+            [['email'], ValidatorFactory::VALIDATOR_EMAIL],
+            [['content'], ValidatorFactory::VALIDATOR_STRING, 'min' => 20, 'max' => 225],
+        ];
     }
 
     /**
@@ -21,15 +33,6 @@ class Contact extends \Ocore\BaseModel
             'email' => 'Email',
             'content' => 'Comment',
             'username' => 'Username'
-        ];
-    }
-
-    public function getRules(): array
-    {
-        return [
-            [['fullName', 'email'], 'required'],
-            [['email'], 'email'],
-            [['content'], 'string', 'min' => 20, 'max' => 225],
         ];
     }
 }

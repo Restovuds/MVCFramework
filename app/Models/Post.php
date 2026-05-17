@@ -2,11 +2,12 @@
 
 namespace App\Models;
 
-use Ocore\helpers\TextHelper;
+use Ocore\BaseModel;
+use Ocore\validation\ValidatorFactory;
 
-class Post extends \Ocore\BaseModel
+class Post extends BaseModel
 {
-    public array $fillable = ['title', 'content'];
+    public array $fillable = ['title', 'content', 'slug'];
 
     public static function tableName(): string
     {
@@ -16,10 +17,11 @@ class Post extends \Ocore\BaseModel
     public function getRules(): array
     {
         return [
-            [['title', 'content'], 'required'],
-            [['title'], 'string', 'min' => 5, 'max' => 255],
-            [['title'], 'unique', 'message' => 'This title has already been taken.'],
-            [['content'], 'string', 'min' => 20, 'max' => 1000],
+            [['title', 'content', 'slug'], ValidatorFactory::VALIDATOR_REQUIRED],
+            [['title', 'slug'], ValidatorFactory::VALIDATOR_STRING, 'min' => 5, 'max' => 255],
+            [['content'], ValidatorFactory::VALIDATOR_STRING, 'min' => 20, 'max' => 1000],
+            [['slug'], ValidatorFactory::VALIDATOR_UNIQUE, 'message' => 'This slug has already been taken.'],
+            [['slug'], ValidatorFactory::VALIDATOR_SLUG, 'message' => 'The slug pattern is :slugPattern:', 'messageConfig' => [':slugPattern:' => 'a-z0-9-']],
         ];
     }
 
@@ -30,14 +32,5 @@ class Post extends \Ocore\BaseModel
             'slug' => 'Slug',
             'content' => 'Post Comment'
         ];
-    }
-
-    public function save($runValidation = true): false|string
-    {
-        if ($this->validate()) {
-            $this->attributes['slug'] = TextHelper::createSlug($this->attributes['title']);
-            return parent::save($runValidation);
-        }
-        return false;
     }
 }

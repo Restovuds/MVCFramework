@@ -100,6 +100,11 @@ class Database
         return $this->statement->fetch();
     }
 
+    public function column(): mixed
+    {
+        return $this->statement->fetchColumn();
+    }
+
     public function findOrFail(string $tableName, int $id, string|null $failTitle = null, string|null $failText = null): mixed
     {
         $result = $this->findOne($tableName, $id);
