@@ -11,6 +11,7 @@ class Database
     protected PDOStatement $statement;
 
     protected array $queries = [];
+    protected array $params = [];
 
     public function __construct()
     {
@@ -54,7 +55,7 @@ class Database
         } catch (\PDOException $e) {
             error_log("[". date('Y-m-d H:i:s') ."] DB ERROR: {$e->getMessage()}" . PHP_EOL, 3, ERROR_LOG_PATH);
             if (DEBUG) {
-                abort(500, null, "Query failed: " . $e->getMessage());
+                abort(500, null, "Query failed: " . $e->getMessage() . '. SQL: ' . $query . ' Params: ' . json_encode($params));
             } else {
                 abort(500);
             }
@@ -62,8 +63,11 @@ class Database
         return $this;
     }
 
-    public function asArray(): array
+    public function asArray($isOne = false): mixed
     {
+        if ($isOne) {
+            return $this->statement->fetch();
+        }
         return $this->statement->fetchAll();
     }
 
@@ -75,6 +79,24 @@ class Database
     public function findOne(string $tableName, int $id): mixed
     {
         $this->query("SELECT * FROM $tableName WHERE id = :id LIMIT 1", ['id' => $id]);
+        return $this->statement->fetch();
+    }
+
+    public function find(string $tableName, array $where = []): self
+    {
+        $whereQuery = array_map(fn($key, $value) => "$key = :$key", array_keys($where), $where);
+        $whereQuery = implode(' AND ', $whereQuery);
+        $this->query("SELECT * FROM $tableName WHERE $whereQuery", $where);
+        $this->params = $where;
+
+        return $this;
+    }
+
+    public function one(): mixed
+    {
+        $queryString = $this->statement->queryString . ' LIMIT 1';
+        $this->query($queryString, $this->params);
+
         return $this->statement->fetch();
     }
 

@@ -74,4 +74,18 @@ class PostController extends BaseController
 
         response()->redirect("/");
     }
+
+    public function view()
+    {
+        $slug = router()->getRootParam('slug', false);
+        if (!$slug) {
+            abort();
+        }
+
+        if (!$post = db()->find(Post::tableName(), ['slug' => $slug])->one()) {
+            abort();
+        }
+
+        return $this->render(view: 'posts/view', data: ['title' => $post['title'], 'post' => $post]);
+    }
 }

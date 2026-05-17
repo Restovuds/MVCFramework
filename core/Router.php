@@ -8,6 +8,7 @@ class Router
     public Response $response;
 
     protected array $routes = [];
+    public array $rootParams = [];
 
     public function __construct(Request $request, Response $response)
     {
@@ -36,13 +37,37 @@ class Router
     {
         $path = $this->request->getPath();
         $method = $this->request->getMethod();
-        $handler = $this->routes[$method]["/$path"] ?? function () {
+
+        $handler = $this->matchRoute($method, $path);
+
+        if (false === $handler) {
             abort();
-        };
+        }
         if (is_array($handler)) {
             $handler[0] = new $handler[0];
         }
 
         return call_user_func($handler);
+    }
+
+    public function getRootParam($name, $default = null): string
+    {
+        return $this->rootParams[$name] ?? $default;
+
+    }
+
+    protected function matchRoute(string $method, string $path)
+    {
+        foreach ($this->routes[$method] as $pattern => $route) {
+            if (preg_match( "#^{$pattern}$#", DIRECTORY_SEPARATOR.$path, $matches )) {
+                foreach ($matches as $k => $v) {
+                    if (is_string($k)) {
+                        $this->rootParams[$k] = $v;
+                    }
+                }
+                return $route;
+            }
+        }
+        return false;
     }
 }

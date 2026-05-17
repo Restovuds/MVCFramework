@@ -16,14 +16,6 @@ function view(string $view = '', array $data = [], $layout = null): string|\Ocor
     return app()->view;
 }
 
-function base_url($url = '/'): string
-{
-    if (str_starts_with($url, '/')) {
-        return SITE_PATH . $url;
-    }
-    return SITE_PATH . DIRECTORY_SEPARATOR . $url;
-}
-
 function request(): \Ocore\Request
 {
     return app()->request;
@@ -32,6 +24,34 @@ function request(): \Ocore\Request
 function response(): \Ocore\Response
 {
     return app()->response;
+}
+
+function db(): \Ocore\Database
+{
+    return app()->db;
+}
+
+function session(): Ocore\Session
+{
+    return app()->session;
+}
+
+function get_alerts()
+{
+    \Ocore\helpers\FlashHelper::get_alerts();
+}
+
+function router(): \Ocore\Router
+{
+    return app()->router;
+}
+
+function base_url($url = '/'): string
+{
+    if (str_starts_with($url, '/')) {
+        return SITE_PATH . $url;
+    }
+    return SITE_PATH . DIRECTORY_SEPARATOR . $url;
 }
 
 function spec_chars($string): string
@@ -84,19 +104,4 @@ function abort(int $code = 404, string|null $error = null, string|null $message 
         'code' => $code, 'title' => $error, 'message' => $message
     ], 'errorLayout');
     die;
-}
-
-function db(): \Ocore\Database
-{
-    return app()->db;
-}
-
-function session(): Ocore\Session
-{
-    return app()->session;
-}
-
-function get_alerts()
-{
-    \Ocore\helpers\FlashHelper::get_alerts();
 }

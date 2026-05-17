@@ -2,31 +2,59 @@
 
 namespace Ocore;
 
+use Ocore\validation\ValidatorFactory;
+use Ocore\validation\validators\BaseValidator;
+
 abstract class BaseModel
 {
     public array $fillable = [];
     public array $attributes = [];
 
-    public array $rules = [];
-    public array $attributeLabels = [];
-
     protected array $errors = [];
 
-    public static function tableName(): string
+
+    /**
+     * Provides the name of the database table associated with the model or class.
+     *
+     * @return string The name of the database table.
+     */
+    abstract public static function tableName(): string;
+
+
+    /**
+     * Retrieves the set of rules.
+     *
+     * @return array An array containing the defined rules.
+     */
+    public function getRules(): array
     {
-        return '';
+        return [];
     }
 
-    protected array $errorMessages = [
-        Validators::REQUIRED => ':attribute: is required',
-        Validators::MIN => ':attribute: must be at least :value: characters long',
-        Validators::MAX => ':attribute: must be at most :value: characters long',
-        Validators::EMAIL => ':attribute: must be a valid email address',
-    ];
+    /**
+     * Retrieves the attribute labels.
+     *
+     * @return array An array containing the attribute labels.
+     */
+    protected function attributeLabels(): array
+    {
+        return [];
+    }
+
+    /**
+     * Retrieves the label for a specific attribute.
+     *
+     * @param string $attribute The name of the attribute for which the label is being retrieved.
+     * @return string The label corresponding to the specified attribute, or the attribute name itself if no label is defined.
+     */
+    public function getAttributeLabel($attribute): string
+    {
+        return $this->attributeLabels()[$attribute] ?? $attribute;
+    }
 
     public function save($runValidation = true): false|string
     {
-        if($runValidation && !$this->validate()) {
+        if ($runValidation && !$this->validate()) {
             return false;
         }
 
@@ -87,19 +115,42 @@ abstract class BaseModel
 
         return true;
     }
+
+    /**
+     * Validates the attributes of the model based on the defined rules.
+     *
+     * @return bool True if the validation passes without errors, otherwise false.
+     */
     public function validate(): bool
     {
-        foreach ($this->attributes as $attribute => $value) {
-            if (isset($this->rules[$attribute])) {
-                $this->checkValidator([
-                    'attribute' => $attribute,
-                    'value' => $value,
-                    'rules' => $this->rules[$attribute]
-                ]);
+        $rules = $this->getRules();
+
+        foreach ($rules as $rule) {
+            $attrToValidate = $rule[0];
+            $ruleName = $rule[1];
+            $config = array_slice($rule, 2);
+
+            $validator = ValidatorFactory::createValidator($ruleName, $this, $config);
+
+            if (is_array($attrToValidate)) {
+                foreach ($attrToValidate as $attr) {
+                    $this->validateAttribute($validator, $this->attributes[$attr], $attr);
+                }
+            } else {
+                $this->validateAttribute($validator, $this->attributes[$attrToValidate], $attrToValidate);
             }
+
         }
 
         return !$this->hasErrors();
+    }
+
+    private function validateAttribute(BaseValidator $validator, mixed $value, string|null $attribute): void
+    {
+        $validationFailed = !$validator->validate($value, $attribute);
+        if ($validationFailed) {
+            $this->addError($attribute, $validator->getErrorMessage($attribute, $value));
+        }
     }
 
     public function delete(int $id): bool
@@ -107,29 +158,6 @@ abstract class BaseModel
         $query = "DELETE FROM {$this::tableName()} WHERE id=:id";
         db()->query($query, compact('id'));
         return !!db()->affectedRows();
-    }
-
-    protected function checkValidator(array $field): void
-    {
-        foreach ($field['rules'] as $ruleName => $ruleValue) {
-            if (is_int($ruleName)) {
-                $ruleName = $ruleValue;
-            }
-            if (in_array($ruleName, array_keys(Validators::VALIDATORS_MAP))) {
-                if (!call_user_func_array([$this, Validators::VALIDATORS_MAP[$ruleName]], [$field['value'], $ruleValue])) {
-                    $this->addError($field['attribute'], str_replace(
-                        [':attribute:', ':value:'],
-                        [$this->getAttributeLabel($field['attribute']), $ruleValue],
-                        $this->errorMessages[$ruleName]
-                    ));
-                }
-            }
-        }
-    }
-
-    public function getAttributeLabel($attribute): string
-    {
-        return $this->attributeLabels[$attribute] ?? $attribute;
     }
 
     public function addError(string $attribute, string $message): void
@@ -166,25 +194,4 @@ abstract class BaseModel
     {
         return !empty($this->errors);
     }
-
-    protected function requiredValidator(mixed $value, $ruleValue = null): bool
-    {
-        return !empty(trim($value));
-    }
-
-    protected function minValidator(string $value, $ruleValue): bool
-    {
-        return mb_strlen($value, 'UTF-8') >= $ruleValue;
-    }
-
-    protected function maxValidator(string $value, $ruleValue): bool
-    {
-        return mb_strlen($value, 'UTF-8') <= $ruleValue;
-    }
-
-    protected function emailValidator(mixed $value, $ruleValue = null): bool
-    {
-        return filter_var($value, FILTER_VALIDATE_EMAIL);
-    }
-
 }
