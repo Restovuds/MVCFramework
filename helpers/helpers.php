@@ -67,6 +67,9 @@ function old($fieldName): string|null
 function get_error($fieldName, $errors = []): string|null
 {
     if (isset($errors[$fieldName])) {
+        if (is_array($errors[$fieldName])) {
+            return '<div class="invalid-feedback d-block">' . implode('<br>', $errors[$fieldName]) . '</div>';
+        }
         return '<div class="invalid-feedback d-block">' . $errors[$fieldName] . '</div>';
     }
     return null;

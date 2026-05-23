@@ -6,6 +6,7 @@ use Ocore\validation\validators\BaseValidator;
 use Ocore\validation\validators\CustomValidator;
 use Ocore\validation\validators\EmailValidator;
 use Ocore\validation\validators\ExistValidator;
+use Ocore\validation\validators\FileValidator;
 use Ocore\validation\validators\IntegerValidator;
 use Ocore\validation\validators\MatchValidator;
 use Ocore\validation\validators\RequiredValidator;
@@ -24,6 +25,7 @@ class ValidatorFactory
     public const string VALIDATOR_EXIST = 'exist';
     public const string VALIDATOR_SLUG = 'slug';
     public const string VALIDATOR_MATCH = 'match';
+    public const string VALIDATOR_FILE = 'file';
 
 
     private static array $validators = [
@@ -35,6 +37,7 @@ class ValidatorFactory
         self::VALIDATOR_EXIST => ExistValidator::class,
         self::VALIDATOR_SLUG => SlugValidator::class,
         self::VALIDATOR_MATCH => MatchValidator::class,
+        self::VALIDATOR_FILE => FileValidator::class,
     ];
 
     public static function createValidator(mixed $validator, BaseModel $model, $config = []): BaseValidator

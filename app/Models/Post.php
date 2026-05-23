@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use helpers\MimeTypes;
 use Ocore\BaseModel;
 use Ocore\validation\ValidatorFactory;
+use Ocore\validation\validators\FileValidator;
 
 class Post extends BaseModel
 {
@@ -22,6 +24,19 @@ class Post extends BaseModel
             [['content'], ValidatorFactory::VALIDATOR_STRING, 'min' => 20, 'max' => 1000],
             [['slug'], ValidatorFactory::VALIDATOR_UNIQUE, 'message' => 'This slug has already been taken.'],
             [['slug'], ValidatorFactory::VALIDATOR_SLUG, 'message' => 'The slug pattern is :slugPattern:', 'messageConfig' => [':slugPattern:' => '/^[a-z0-9-]+$/']],
+            [['thumbnail'], ValidatorFactory::VALIDATOR_REQUIRED],
+            [
+                ['thumbnail'],
+                ValidatorFactory::VALIDATOR_FILE,
+                'extensions' => [
+                    MimeTypes::MIME_IMAGE_JPEG,
+                    MimeTypes::MIME_IMAGE_JPG,
+                    MimeTypes::MIME_IMAGE_PNG,
+                ],
+                'maxSize'         => 2 * 1024 * 1024,
+                'maxFiles'        => 3,
+                'errorOnEachFile' => true,
+            ]
         ];
     }
 
@@ -30,7 +45,8 @@ class Post extends BaseModel
         return [
             'title' => 'Post Title',
             'slug' => 'Slug',
-            'content' => 'Post Comment'
+            'content' => 'Post Comment',
+            'thumbnail' => 'Thumbnail',
         ];
     }
 }

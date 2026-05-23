@@ -36,8 +36,6 @@ class Database
                 abort(500);
             }
         }
-
-        return $this;
     }
 
     public function query(string $query, array $params = []): static

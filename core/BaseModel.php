@@ -4,6 +4,7 @@ namespace Ocore;
 
 use Ocore\validation\ValidatorFactory;
 use Ocore\validation\validators\BaseValidator;
+use Ocore\validation\validators\FileValidator;
 
 abstract class BaseModel
 {

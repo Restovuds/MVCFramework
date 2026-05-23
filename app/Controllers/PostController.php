@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Post;
+use helpers\UploadedFile;
 use Ocore\helpers\FlashHelper;
 
 class PostController extends BaseController
@@ -16,6 +17,10 @@ class PostController extends BaseController
     {
         $model = new Post();
         $model->load();
+
+        $model->attributes['thumbnail'] = isset($_FILES['thumbnail'])
+            ? UploadedFile::createFromFiles($_FILES['thumbnail'])
+            : [];
 
         if (!$model->validate()) {
             return $this->render(view: 'posts/create', data: ['title' => 'Create Post', 'errors' => $model->getErrorsAsArray()]);

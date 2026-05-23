@@ -60,13 +60,18 @@ class Request
 
     public function getData(): array
     {
-        $data = [];
-
         $request_data = $this->isGet() ? $_GET : $_POST;
-        foreach ($request_data as $k => $v) {
-            $data[$k] = trim($v);
-        }
+        return array_map([$this, 'trimDeep'], $request_data);
+    }
 
-        return $data;
+    private function trimDeep(mixed $value): mixed
+    {
+        if (is_array($value)) {
+            return array_map([$this, 'trimDeep'], $value);
+        }
+        if (is_string($value)) {
+            return trim($value);
+        }
+        return $value;
     }
 }

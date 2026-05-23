@@ -10,7 +10,7 @@
 
             <h1>Create a new post</h1>
 
-            <form method="post" action="<?= base_url('/posts/store'); ?>">
+            <form method="post" action="<?= base_url('/posts/store'); ?>" enctype="multipart/form-data">
 
                 <div class="mb-3">
                     <label for="title" class="form-label">Title</label>
@@ -26,6 +26,14 @@
                            class="<?= merge_classes('form-control', get_bootstrap_validation_class('slug', $errors ?? [], false)) ?>"
                            name="slug" id="slug" placeholder="Type slug here" value="<?= old('slug') ?>">
                     <?= get_error('slug', $errors ?? []); ?>
+                </div>
+
+                <div class="mb-3">
+                    <label for="thumbnail" class="form-label">Thumbnail</label>
+                    <input type="file"
+                           class="<?= merge_classes('form-control', get_bootstrap_validation_class('thumbnail', $errors ?? [], false)) ?>"
+                           name="thumbnail" id="thumbnail" multiple>
+                    <?= get_error('thumbnail', $errors ?? []); ?>
                 </div>
 
                 <div class="mb-3">

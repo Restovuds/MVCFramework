@@ -8,6 +8,12 @@ class RequiredValidator extends BaseValidator
 
     public function validate(mixed $value, string|null $attribute = null): bool
     {
-        return !empty(trim($value));
+        if (is_array($value)) {
+            return !empty($value);
+        }
+        if (is_null($value)) {
+            return false;
+        }
+        return !empty(trim((string)$value));
     }
 }
