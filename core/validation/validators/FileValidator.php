@@ -35,7 +35,12 @@ class FileValidator extends BaseValidator
 
         if (isset($config['extensions'])) {
             $exts = is_string($config['extensions']) ? [$config['extensions']] : $config['extensions'];
-            if (!is_array($exts) || !array_all($exts, 'is_string')) {
+
+            $isString = function (...$ext) {
+                return is_string($ext[0]);
+            };
+
+            if (!is_array($exts) || !array_all($exts, $isString)) {
                 throw new \InvalidArgumentException('Invalid extensions value passed to FileValidator.');
             }
             $this->allowedMimeTypes = $exts;

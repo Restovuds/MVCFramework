@@ -5,7 +5,6 @@ namespace App\Models;
 use helpers\MimeTypes;
 use Ocore\BaseModel;
 use Ocore\validation\ValidatorFactory;
-use Ocore\validation\validators\FileValidator;
 
 class Post extends BaseModel
 {
