@@ -33,7 +33,7 @@ class Post extends BaseModel
                     MimeTypes::MIME_IMAGE_PNG,
                 ],
                 'maxSize'         => 2 * 1024 * 1024,
-                'maxFiles'        => 3,
+                'maxFiles'        => 1,
                 'errorOnEachFile' => true,
             ]
         ];
