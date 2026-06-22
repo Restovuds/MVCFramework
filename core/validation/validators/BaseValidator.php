@@ -32,6 +32,12 @@ abstract class BaseValidator
         $a = array_merge([':attribute:', ':value:'], array_keys($messageParams));
         $b = array_merge([$this->model->getAttributeLabel($attribute), $value], array_values($messageParams));
 
+        foreach ($b as &$value) {
+            if (is_array($value) && empty($value)) {
+                $value = '';
+            }
+        }
+
         return str_replace($a, $b, $message);
     }
 }

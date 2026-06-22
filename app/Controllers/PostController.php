@@ -26,7 +26,7 @@ class PostController extends BaseController
             return $this->render(view: 'posts/create', data: ['title' => 'Create Post', 'errors' => $model->getErrorsAsArray()]);
         }
 
-        if ($id = $model->save()) {
+        if ($id = $model->savePost()) {
             FlashHelper::createSuccessAlert("Post {$id} created");
         } else {
             FlashHelper::createErrorAlert("Create post failed");

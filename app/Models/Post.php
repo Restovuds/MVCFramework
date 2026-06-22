@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use helpers\MimeTypes;
+use helpers\UploadedFile;
 use Ocore\BaseModel;
 use Ocore\validation\ValidatorFactory;
 
@@ -47,5 +48,22 @@ class Post extends BaseModel
             'content' => 'Post Comment',
             'thumbnail' => 'Thumbnail',
         ];
+    }
+
+    public function savePost(): false|string
+    {
+        $thumbnail = null;
+        if (isset($this->attributes['thumbnail']) && array_all($this->attributes['thumbnail'], fn($item) => $item instanceof UploadedFile)) {
+            $thumbnail = $this->attributes['thumbnail'];
+        }
+        unset($this->attributes['thumbnail']);
+        $id = $this->save(false);
+
+        if ($thumbnail && count($thumbnail) === 1) {
+            if ($path = UploadedFile::uploadFile($thumbnail[0])) {
+                db()->query("UPDATE post SET thumbnail = ? WHERE id = ?", [$path, $id]);
+            }
+        }
+        return $id;
     }
 }

@@ -67,7 +67,6 @@ class Router
                 }
 
                 $route[1] = 'action' . ucfirst($route[1]);
-                dump($route);
                 return $route;
             }
         }

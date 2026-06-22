@@ -71,6 +71,13 @@ class UploadedFile
         return strtolower(pathinfo($this->name, PATHINFO_EXTENSION));
     }
 
+    public function getExtension(): string
+    {
+        $array = explode('.', $this->name);
+        return end($array);
+        // return strtolower(pathinfo($this->tmpName, PATHINFO_EXTENSION)); not working
+    }
+
     public function getUploadErrorMessage(): string
     {
         return match ($this->error) {
@@ -84,5 +91,39 @@ class UploadedFile
             UPLOAD_ERR_EXTENSION  => 'A PHP extension stopped the file upload.',
             default               => 'Unknown upload error.',
         };
+    }
+
+    public function save(?string $name = null, ?string $path = null): bool
+    {
+        return false;
+    }
+
+    public static function uploadFile(self $file): false|string
+    {
+        $ext = $file->getExtension();
+        $dir = '/' . date('Y/m/d');
+
+        try {
+            self::createDirIfNotExists($dir);
+            $file_name = md5($file->name . uniqid()) . '.' . $ext;
+            $file_path = UPLOADS . $dir . DIRECTORY_SEPARATOR . $file_name;
+
+            if (move_uploaded_file($file->tmpName, $file_path)) {
+                return '/uploads' . $dir . '/' . $file_name;
+            } else {
+                throw new \Exception('Failed to move uploaded file.');
+            }
+        } catch (\Throwable $e) {
+            error_log('['.date('Y-m-d H:i:s').'] ' . $e->getMessage());
+            return false;
+        }
+
+    }
+
+    public static function createDirIfNotExists($path): void
+    {
+        if (!is_dir(UPLOADS . $path)) {
+            mkdir(UPLOADS . $path, 0775, true);
+        }
     }
 }
