@@ -32,8 +32,16 @@
                     <label for="thumbnail" class="form-label">Thumbnail</label>
                     <input type="file"
                            class="<?= merge_classes('form-control', get_bootstrap_validation_class('thumbnail', $errors ?? [], false)) ?>"
-                           name="thumbnail" id="thumbnail" multiple>
+                           name="thumbnail" id="thumbnail">
                     <?= get_error('thumbnail', $errors ?? []); ?>
+                </div>
+
+                <div class="mb-3">
+                    <label for="gallery" class="form-label">Gallery</label>
+                    <input type="file"
+                           class="<?= merge_classes('form-control', get_bootstrap_validation_class('gallery', $errors ?? [], false)) ?>"
+                           name="gallery[]" id="gallery" multiple>
+                    <?= get_error('gallery', $errors ?? []); ?>
                 </div>
 
                 <div class="mb-3">

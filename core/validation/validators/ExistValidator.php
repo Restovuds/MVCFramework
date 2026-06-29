@@ -13,7 +13,17 @@ class ExistValidator extends BaseValidator
             return true; // Skip extra db query validation if the model has errors
         }
 
-        $query = db()->query("SELECT {$attribute} FROM {$this->model::tableName()} WHERE {$attribute}=:{$attribute} limit 1", [$attribute => $value]);
+        $targetClass = $this->config['targetClass'] ?? null;
+        if (!$targetClass) {
+            return false;
+        }
+
+        $targetAttribute = $this->config['targetAttribute'] ?? null;
+        if (!$targetAttribute) {
+            return false;
+        }
+
+        $query = db()->query("SELECT {$targetAttribute} FROM {$targetClass::tableName()} WHERE {$targetAttribute}=:{$attribute} limit 1", [$attribute => $value]);
         return !!$query->column();
     }
 }

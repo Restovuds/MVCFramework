@@ -4,7 +4,6 @@ namespace Ocore;
 
 use Ocore\validation\ValidatorFactory;
 use Ocore\validation\validators\BaseValidator;
-use Ocore\validation\validators\FileValidator;
 
 abstract class BaseModel
 {
@@ -102,9 +101,9 @@ abstract class BaseModel
         return !!db()->query($query, $this->attributes);
     }
 
-    public function load(): bool
+    public function load($data = null): bool
     {
-        $data = request()->getData();
+        $data = is_null($data) ? request()->getData() : $data;
 
         foreach ($this->fillable as $f) {
             if (isset($data[$f])) {
@@ -112,6 +111,10 @@ abstract class BaseModel
             } else {
                 $this->attributes[$f] = null;
             }
+        }
+
+        if (key_exists('id', $data)) {
+            $this->attributes['id'] = $data['id'];
         }
 
         return true;

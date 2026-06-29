@@ -6,15 +6,15 @@ trait MinMaxTrait
 {
     public function checkMinMax(mixed $value): bool|int
     {
-        if ($this->config['min'] && $this->config['max']) {
+        if ((key_exists('min', $this->config) && $this->config['min']) && (key_exists('max', $this->config) && $this->config['max'])) {
             return $value >= $this->config['min'] && $value <= $this->config['max'];
         }
 
-        if ($this->config['min'] && $value < $this->config['min']) {
+        if (key_exists('min', $this->config) && $this->config['min'] && $value < $this->config['min']) {
             return false;
         }
 
-        if ($this->config['max'] && $value > $this->config['max']) {
+        if (key_exists('man', $this->config) && $this->config['max'] && $value > $this->config['max']) {
             return false;
         }
 

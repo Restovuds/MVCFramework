@@ -21,6 +21,9 @@ class PostController extends BaseController
         $model->attributes['thumbnail'] = isset($_FILES['thumbnail'])
             ? UploadedFile::createFromFiles($_FILES['thumbnail'])
             : [];
+        $model->attributes['gallery'] = isset($_FILES['gallery'])
+            ? UploadedFile::createFromFiles($_FILES['gallery'])
+            : [];
 
         if (!$model->validate()) {
             return $this->render(view: 'posts/create', data: ['title' => 'Create Post', 'errors' => $model->getErrorsAsArray()]);
