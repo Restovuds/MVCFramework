@@ -50,6 +50,15 @@ use Ocore\View;
                     <a class="nav-link" href="<?= base_url('/posts/create'); ?>">Create Post</a>
                 </li>
             </ul>
+
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link" href="<?= base_url('/register'); ?>">Sigh Up</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="<?= base_url('/about'); ?>">Sigh In</a>
+                </li>
+            </ul>
         </div>
     </div>
 </nav>

@@ -7,7 +7,6 @@ use Ocore\validation\validators\BaseValidator;
 
 abstract class BaseModel
 {
-    public array $fillable = [];
     public array $attributes = [];
 
     protected array $errors = [];
@@ -39,6 +38,46 @@ abstract class BaseModel
     protected function attributeLabels(): array
     {
         return [];
+    }
+
+    public function getAttributes(): array
+    {
+        $rules = $this->getRules();
+        $attributes = [];
+        foreach ($rules as $rule) {
+            if (is_array($rule[0])) {
+                $attributes = array_merge($attributes, $rule[0]);
+            } else {
+                $attributes[] = $rule[0];
+            }
+        }
+
+        return array_unique($attributes);
+    }
+
+    public function __get(string $name): mixed
+    {
+        if (in_array($name, $this->getAttributes())) {
+            return $this->attributes[$name];
+        }
+
+        return null;
+    }
+
+    public function __set(string $name, mixed $value): void
+    {
+        if (in_array($name, $this->getAttributes())) {
+            $this->attributes[$name] = $value;
+        } else {
+            throw new \Exception("Property {$name} does not exist in class " . get_class($this));
+        }
+    }
+
+    public function __unset(string $name): void
+    {
+        if (isset($this->attributes[$name])) {
+            unset($this->attributes[$name]);
+        }
     }
 
     /**
@@ -105,7 +144,7 @@ abstract class BaseModel
     {
         $data = is_null($data) ? request()->getData() : $data;
 
-        foreach ($this->fillable as $f) {
+        foreach ($this->getAttributes() as $f) {
             if (isset($data[$f])) {
                 $this->attributes[$f] = $data[$f];
             } else {

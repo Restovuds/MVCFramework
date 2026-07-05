@@ -4,7 +4,7 @@ namespace Ocore;
 
 class Session
 {
-    protected const string FLASH_KEY = 'FLASH';
+    protected const string KEY_FLASH = 'FLASH';
 
     public function __construct()
     {
@@ -31,21 +31,21 @@ class Session
     public function hasFlash(?string $key = null): bool
     {
         if (is_null($key)) {
-            return isset($_SESSION[self::FLASH_KEY]);
+            return isset($_SESSION[self::KEY_FLASH]);
         }
-        return isset($_SESSION[self::FLASH_KEY][$key]);
+        return isset($_SESSION[self::KEY_FLASH][$key]);
     }
 
     public function setFlash(string $key, mixed $value): bool
     {
-        return $_SESSION[self::FLASH_KEY][$key] = $value;
+        return $_SESSION[self::KEY_FLASH][$key] = $value;
     }
 
     public function getFlash(string $key): mixed
     {
-        if (isset($_SESSION[self::FLASH_KEY][$key])) {
-            $value = $_SESSION[self::FLASH_KEY][$key];
-            unset($_SESSION[self::FLASH_KEY][$key]);
+        if (isset($_SESSION[self::KEY_FLASH][$key])) {
+            $value = $_SESSION[self::KEY_FLASH][$key];
+            unset($_SESSION[self::KEY_FLASH][$key]);
         }
 
         return $value ?? null;

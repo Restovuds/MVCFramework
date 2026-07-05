@@ -4,6 +4,12 @@ namespace App\Models;
 
 use Ocore\BaseModel;
 
+/**
+ * @property int $id
+ * @property int $post_id
+ * @property string $path
+ * @property string $name
+ */
 class Gallery extends BaseModel
 {
     public array $fillable = ['post_id', 'path', 'name'];

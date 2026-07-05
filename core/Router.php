@@ -21,16 +21,14 @@ class Router
         return $this->routes;
     }
 
-    public function get($path, $callback): void
+    public function get($path, $callback): self
     {
-        $path = trim($path, '/');
-        $this->routes['GET']["/$path"] = $callback;
+        return $this->add($path, $callback, 'GET');
     }
 
-    public function post($path, $callback): void
+    public function post($path, $callback): self
     {
-        $path = trim($path, '/');
-        $this->routes['POST']["/$path"] = $callback;
+        return $this->add($path, $callback, 'POST');
     }
 
     public function dispatch(): mixed
@@ -40,14 +38,15 @@ class Router
 
         $handler = $this->matchRoute($method, $path);
 
-        if (false === $handler) {
+        if (false === $handler || false === $handler['callback']) {
             abort();
         }
-        if (is_array($handler)) {
-            $handler[0] = new $handler[0];
+
+        if (is_array($handler['callback'])) {
+            $handler['callback'][0] = new $handler['callback'][0];
         }
 
-        return call_user_func($handler);
+        return call_user_func($handler['callback']);
     }
 
     public function getRootParam($name, $default = null): string
@@ -66,10 +65,35 @@ class Router
                     }
                 }
 
-                $route[1] = 'action' . ucfirst($route[1]);
+                if (!($route['callback'] instanceof \Closure)) {
+                    $route['callback'][1] = 'action' . ucfirst($route['callback'][1]);
+                }
                 return $route;
             }
         }
         return false;
+    }
+
+    public function add($path, $callback, string|array $method): self
+    {
+        if (empty($method)) {
+            throw new \Exception('Method is required. Router configuration error occurred');
+        }
+        if (is_array($method)) {
+            $method = array_map('strtoupper', $method);
+        } else {
+            $method = [strtoupper($method)];
+        }
+
+        $path = trim($path, '/');
+
+        foreach ($method as $item_method) {
+            $this->routes[$item_method]["/$path"] = [
+                'callback' => $callback,
+                'middleware' => null,
+            ];
+        }
+
+        return $this;
     }
 }

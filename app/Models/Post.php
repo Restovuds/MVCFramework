@@ -7,10 +7,16 @@ use helpers\UploadedFile;
 use Ocore\BaseModel;
 use Ocore\validation\ValidatorFactory;
 
+/**
+ * @property int $id
+ * @property string $title
+ * @property string $slug
+ * @property string $content
+ * @property string $thumbnail
+ * @property array $gallery
+ */
 class Post extends BaseModel
 {
-    public array $fillable = ['title', 'content', 'slug'];
-
     public static function tableName(): string
     {
         return 'post';
@@ -24,6 +30,7 @@ class Post extends BaseModel
             [['content'], ValidatorFactory::VALIDATOR_STRING, 'min' => 20, 'max' => 1000],
             [['slug'], ValidatorFactory::VALIDATOR_UNIQUE, 'message' => 'This slug has already been taken.'],
             [['slug'], ValidatorFactory::VALIDATOR_SLUG, 'message' => 'The slug pattern is :slugPattern:', 'messageConfig' => [':slugPattern:' => '/^[a-z0-9-]+$/']],
+            [['thumbnail'], ValidatorFactory::VALIDATOR_REQUIRED],
             [
                 ['thumbnail'],
                 ValidatorFactory::VALIDATOR_FILE,
@@ -35,20 +42,19 @@ class Post extends BaseModel
                 'maxSize'         => 2 * 1024 * 1024,
                 'maxFiles'        => 1,
                 'errorOnEachFile' => true,
+            ],
+            [
+                ['gallery'],
+                ValidatorFactory::VALIDATOR_FILE,
+                'extensions' => [
+                    MimeTypes::MIME_IMAGE_JPEG,
+                    MimeTypes::MIME_IMAGE_JPG,
+                    MimeTypes::MIME_IMAGE_PNG,
+                ],
+                'maxSize'         => 2 * 1024 * 1024,
+                'maxFiles'        => 2,
+                'errorOnEachFile' => true,
             ]
-//            [['thumbnail'], ValidatorFactory::VALIDATOR_REQUIRED],
-//            [
-//                ['gallery'],
-//                ValidatorFactory::VALIDATOR_FILE,
-//                'extensions' => [
-//                    MimeTypes::MIME_IMAGE_JPEG,
-//                    MimeTypes::MIME_IMAGE_JPG,
-//                    MimeTypes::MIME_IMAGE_PNG,
-//                ],
-//                'maxSize'         => 2 * 1024 * 1024,
-//                'maxFiles'        => 2,
-//                'errorOnEachFile' => true,
-//            ]
         ];
     }
 
@@ -71,15 +77,15 @@ class Post extends BaseModel
     {
         $thumbnail = null;
         if (isset($this->attributes['thumbnail'])) {
-            $thumbnail = $this->attributes['thumbnail'];
+            $thumbnail = $this->thumbnail;
         }
-        unset($this->attributes['thumbnail']);
+        unset($this->thumbnail);
 
         $gallery = null;
         if (isset($this->attributes['gallery'])) {
-            $gallery = $this->attributes['gallery'];
-            unset($this->attributes['gallery']);
+            $gallery = $this->gallery;
         }
+        unset($this->gallery);
 
         $id = $this->save(false);
 
