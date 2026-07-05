@@ -1,15 +1,19 @@
 <?php
+use Ocore\Pagination;
+
+
 /**
  * @var array $posts
+ * @var Pagination $pagination
  */
 ?>
 
-<div class="container">
-    <h1>Welcome to the Home Page!</h1>
+<div class="container o-post-list-container">
+    <h1>Look at the posts!</h1>
 
     <?php if (!empty($posts)): ?>
         <?php foreach ($posts as $post): ?>
-            <div class="d-flex position-relative p-3">
+            <div class="d-flex position-relative p-3 o-post-list-item">
                 <img src="<?= isset($post['thumbnail']) ? base_url($post['thumbnail']) : base_url('/images/no-image.jpg') ?>" style="max-width: 144px; max-height: 144px;" class="flex-shrink-0 me-3 rounded">
                 <div class="flex-grow-1">
                     <div class="row pb-2">
@@ -35,7 +39,7 @@
                 </div>
             </div>
         <?php endforeach; ?>
+        <?= $pagination ?>
     <?php endif; ?>
-
 </div>
 

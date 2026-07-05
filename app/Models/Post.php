@@ -103,8 +103,6 @@ class Post extends BaseModel
                 foreach ($galleryItems as $item) {
                     $galleryModel = new Gallery();
                     $galleryModel->load($item);
-                    dump($item);
-                    dump($galleryModel);
                     $galleryModel->save();
                 }
             }

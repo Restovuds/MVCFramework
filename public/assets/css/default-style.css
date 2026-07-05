@@ -1,7 +1,12 @@
+@import "../bootstrap/css/bootstrap.min.css";
 
 .portal {
     position: fixed;
     top: 55px;
     left: calc(50% - (500px / 2));
     width: 500px;
+}
+
+.o-post-list-container .o-post-list-item:nth-child(2n) {
+    background-color: var(--bs-tertiary-bg);
 }

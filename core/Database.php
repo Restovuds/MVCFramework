@@ -141,4 +141,10 @@ class Database
 
         return $res;
     }
+
+    public function count(string $tableName): int
+    {
+        $this->query("SELECT COUNT(*) FROM {$tableName}");
+        return $this->column();
+    }
 }
