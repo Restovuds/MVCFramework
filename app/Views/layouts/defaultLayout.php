@@ -52,12 +52,21 @@ use Ocore\View;
             </ul>
 
             <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                <li class="nav-item">
-                    <a class="nav-link" href="<?= base_url('/register'); ?>">Sigh Up</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="<?= base_url('/about'); ?>">Sigh In</a>
-                </li>
+                <?php if(check_auth()): ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Hi, <?= session()->get('user')['first_name'].' '.session()->get('user')['last_name'] ?></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= base_url('/logout'); ?>">Logout</a>
+                    </li>
+                <?php else: ?>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= base_url('/register'); ?>">Sigh Up</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="<?= base_url('/login'); ?>">Sigh In</a>
+                    </li>
+                <?php endif; ?>
             </ul>
         </div>
     </div>

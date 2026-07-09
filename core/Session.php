@@ -13,12 +13,17 @@ class Session
 
     public function set(string $key, mixed $value): bool
     {
-        return $_SESSION[$key] = $value;
+        return (bool)$_SESSION[$key] = $value;
     }
 
     public function get(string $key, mixed $default = null): mixed
     {
         return $_SESSION[$key] ?? $default;
+    }
+
+    public function has(string $key): bool
+    {
+        return isset($_SESSION[$key]);
     }
 
     public function remove(string $key): void

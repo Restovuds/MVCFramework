@@ -74,4 +74,9 @@ class Request
         }
         return $value;
     }
+
+    public function getUserAgent(): string
+    {
+        return $_SERVER['HTTP_USER_AGENT'] ?? 'no-user-agent-provided';
+    }
 }

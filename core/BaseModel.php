@@ -7,7 +7,9 @@ use Ocore\validation\validators\BaseValidator;
 
 abstract class BaseModel
 {
+    const string SCENARIO_DEFAULT = 'default';
     public array $attributes = [];
+    public string $scenario = self::SCENARIO_DEFAULT;
 
     protected array $errors = [];
 
@@ -28,6 +30,56 @@ abstract class BaseModel
     public function getRules(): array
     {
         return [];
+    }
+
+    /**
+     * Declares validation scenarios as a map of scenario name to the list of
+     * attributes that are "active" (loaded and validated) in that scenario.
+     *
+     * By default every model has a single {@see self::SCENARIO_DEFAULT} scenario
+     * covering all attributes, so existing models keep working unchanged.
+     * Override this method to add scenarios, e.g.:
+     *
+     *   return [
+     *       self::SCENARIO_DEFAULT => ['title', 'body', 'slug'],
+     *       'create'              => ['title', 'body', 'slug'],
+     *       'search'              => ['title'],
+     *   ];
+     *
+     * @return array<string, string[]>
+     */
+    public function scenarios(): array
+    {
+        return [
+            self::SCENARIO_DEFAULT => $this->getAttributes(),
+        ];
+    }
+
+    /**
+     * Sets the current scenario and returns the model for chaining.
+     */
+    public function setScenario(string $scenario): static
+    {
+        $this->scenario = $scenario;
+        return $this;
+    }
+
+    /**
+     * Returns the attributes that are active in the current scenario.
+     *
+     * @return string[]
+     * @throws \Exception when the current scenario is not declared.
+     */
+    public function activeAttributes(): array
+    {
+        $scenarios = $this->scenarios();
+        if (!isset($scenarios[$this->scenario])) {
+            throw new \Exception(
+                "Unknown scenario '{$this->scenario}' in " . get_class($this)
+            );
+        }
+
+        return $scenarios[$this->scenario];
     }
 
     /**
@@ -144,12 +196,8 @@ abstract class BaseModel
     {
         $data = is_null($data) ? request()->getData() : $data;
 
-        foreach ($this->getAttributes() as $f) {
-            if (isset($data[$f])) {
-                $this->attributes[$f] = $data[$f];
-            } else {
-                $this->attributes[$f] = null;
-            }
+        foreach ($this->activeAttributes() as $f) {
+            $this->attributes[$f] = $data[$f] ?? null;
         }
 
         if (key_exists('id', $data)) {
@@ -164,25 +212,37 @@ abstract class BaseModel
      *
      * @return bool True if the validation passes without errors, otherwise false.
      */
-    public function validate(): bool
+    public function validate(string|array $attributesToValidate = []): bool
     {
-        $rules = $this->getRules();
+        $this->errors = [];
 
-        foreach ($rules as $rule) {
-            $attrToValidate = $rule[0];
+        $active = $this->activeAttributes();
+
+        $requested = (array)$attributesToValidate;
+        $filter = empty($requested) ? $active : array_intersect($requested, $active);
+
+        foreach ($this->getRules() as $rule) {
+            $ruleAttributes = is_array($rule[0]) ? $rule[0] : [$rule[0]];
             $ruleName = $rule[1];
             $config = array_slice($rule, 2);
 
-            $validator = ValidatorFactory::createValidator($ruleName, $this, $config);
-
-            if (is_array($attrToValidate)) {
-                foreach ($attrToValidate as $attr) {
-                    $this->validateAttribute($validator, $this->attributes[$attr], $attr);
+            if ($this->scenario !== self::SCENARIO_DEFAULT) {
+                $ruleScenarios = $config['on_scenarios'] ?? [self::SCENARIO_DEFAULT];
+                $ruleScenarios = is_string($ruleScenarios) ? [$ruleScenarios] : $ruleScenarios;
+                if (!in_array($this->scenario, $ruleScenarios) && !in_array(self::SCENARIO_DEFAULT, $ruleScenarios)) {
+                    continue;
                 }
-            } else {
-                $this->validateAttribute($validator, $this->attributes[$attrToValidate], $attrToValidate);
             }
 
+            $attributes = array_intersect($ruleAttributes, $filter);
+            if (empty($attributes)) {
+                continue;
+            }
+
+            $validator = ValidatorFactory::createValidator($ruleName, $this, $config);
+            foreach ($attributes as $attr) {
+                $this->validateAttribute($validator, $this->attributes[$attr] ?? null, $attr);
+            }
         }
 
         return !$this->hasErrors();

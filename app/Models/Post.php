@@ -70,7 +70,8 @@ class Post extends BaseModel
 
     public function getThumbnail(): array
     {
-        return db()->query("SELECT path, name FROM ? WHERE id = ?", [Gallery::tableName(), $this->attributes['id']])->asArray();
+        $tableName = Gallery::tableName();
+        return db()->query("SELECT path, name FROM $tableName WHERE id = ?", [$this->attributes['id']])->asArray();
     }
 
     public function savePost(): false|string
@@ -89,6 +90,7 @@ class Post extends BaseModel
 
         $id = $this->save(false);
 
+        /** @var UploadedFile[] $thumbnail */
         if ($thumbnail) {
             if ($path = UploadedFile::uploadFile($thumbnail[0])) {
                 db()->query("UPDATE post SET thumbnail = ? WHERE id = ?", [$path, $id]);

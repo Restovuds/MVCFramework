@@ -22,3 +22,5 @@ $app->router->get('/posts/(?P<slug>[a-z0-9-]+)', [App\Controllers\PostController
 
 // user
 $app->router->add('/register', [\App\Controllers\UserController::class, 'register'], ['get', 'post']);
+$app->router->add('/login', [\App\Controllers\UserController::class, 'login'], ['get', 'post']);
+$app->router->get('/logout', [\App\Controllers\UserController::class, 'logout']);

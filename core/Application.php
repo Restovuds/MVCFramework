@@ -2,6 +2,8 @@
 
 namespace Ocore;
 
+use Ocore\security\Security;
+
 class Application
 {
     public string $uri;
@@ -11,7 +13,7 @@ class Application
     public View $view;
     public Database $db;
     public Session $session;
-    public static Application $app;
+    public Security $security;
 
     public function __construct()
     {
@@ -23,7 +25,9 @@ class Application
         $this->view = new View(DEFAULT_LAYOUT);
         $this->db = new Database();
         $this->session = new Session();
+        $this->security = new Security();
     }
+    public static Application $app;
 
     public function run()
     {

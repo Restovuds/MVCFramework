@@ -108,3 +108,18 @@ function abort(int $code = 404, string|null $error = null, string|null $message 
     ], 'errorLayout');
     die;
 }
+
+function check_auth(): bool
+{
+    if (session()->has('user')) {
+        $userSession = session()->get('user');
+        $userSessionId = $userSession['id'];
+        $decr = app()->security->decrypt($userSessionId, ENC_KEY);
+        $ua = explode('@@@', $decr);
+        if (app()->request->getUserAgent() === $ua[1]) {
+            return true;
+        }
+        return false;
+    }
+    return false;
+}

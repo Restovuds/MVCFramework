@@ -1,5 +1,7 @@
 <?php
 
+$params = require(__DIR__ . '/params-local.php');
+
 define('ROOT', dirname(__DIR__));
 
 const WWW = ROOT . '/public';
@@ -17,6 +19,8 @@ const DEBUG = true;
 const DEFAULT_LAYOUT = 'defaultLayout';
 
 const SITE_PATH = 'http://fr.local';
+
+define("ENC_KEY", $params['session.enc.key']);
 
 const DB = [
     'db_host' => 'db',
