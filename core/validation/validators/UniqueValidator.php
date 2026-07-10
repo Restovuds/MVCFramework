@@ -12,7 +12,8 @@ class UniqueValidator extends BaseValidator
             return true; // Skip extra db query validation if the model has errors
         }
 
-        $query = db()->query("SELECT {$attribute} FROM {$this->model::tableName()} WHERE {$attribute}=:{$attribute} limit 1", [$attribute => $value]);
+        $withId = $this->model?->id ? "AND id != :id" : '';
+        $query = db()->query("SELECT {$attribute} FROM {$this->model::tableName()} WHERE {$attribute}=:{$attribute} {$withId} limit 1", array_merge([$attribute => $value], $withId ? [':id' => $this->model->id] : []));
         return !$query->column();
     }
 }
