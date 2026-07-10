@@ -34,9 +34,8 @@ class Router
     public function dispatch(): mixed
     {
         $path = $this->request->getPath();
-        $method = $this->request->getMethod();
 
-        $handler = $this->matchRoute($method, $path);
+        $handler = $this->matchRoute($path);
 
         if (false === $handler || false === $handler['callback']) {
             abort();
@@ -55,14 +54,22 @@ class Router
 
     }
 
-    protected function matchRoute(string $method, string $path)
+    protected function matchRoute(string $path)
     {
-        foreach ($this->routes[$method] as $pattern => $route) {
-            if (preg_match( "#^{$pattern}$#", DIRECTORY_SEPARATOR.$path, $matches )) {
+        foreach ($this->routes as $route) {
+            if (in_array($this->request->getMethod(), $route['method']) && preg_match( "#^{$route['path']}$#", "/{$path}", $matches )) {
                 foreach ($matches as $k => $v) {
                     if (is_string($k)) {
                         $this->rootParams[$k] = $v;
                     }
+                }
+
+                if ($route['middleware']) {
+                    $middlewareClass = MIDDLEWARE[$route['middleware']] ?? false;
+                    if (!$middlewareClass) {
+                        throw new \Exception("Middleware {$route['middleware']} is not allowed.");
+                    }
+                    (new $middlewareClass())->handle();
                 }
 
                 if (!($route['callback'] instanceof \Closure)) {
@@ -87,13 +94,20 @@ class Router
 
         $path = trim($path, '/');
 
-        foreach ($method as $item_method) {
-            $this->routes[$item_method]["/$path"] = [
-                'callback' => $callback,
-                'middleware' => null,
-            ];
-        }
+    
+        $this->routes[] = [
+            'path' => "/$path",
+            'callback' => $callback,
+            'method' => $method,
+            'middleware' => null,
+        ];
 
+        return $this;
+    }
+
+    public function only(string $middleware): self
+    {
+        $this->routes[array_key_last($this->routes)]['middleware'] = $middleware;
         return $this;
     }
 }

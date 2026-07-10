@@ -16,9 +16,11 @@ const ERROR_LOG_PATH = ROOT . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR
 
 const DEBUG = true;
 
-const DEFAULT_LAYOUT = 'defaultLayout';
+const DEFAULT_LAYOUT = 'defaultLayout';     
 
 const SITE_PATH = 'http://fr.local';
+
+const LOGIN_PAGE = SITE_PATH . '/login';
 
 define("ENC_KEY", $params['session.enc.key']);
 
