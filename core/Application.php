@@ -14,6 +14,9 @@ class Application
     public Database $db;
     public Session $session;
     public Security $security;
+    public Cache $cache;
+
+    private array $container = [];
 
     public function __construct()
     {
@@ -26,11 +29,22 @@ class Application
         $this->db = new Database();
         $this->session = new Session();
         $this->security = new Security();
+        $this->cache = new Cache();
     }
     public static Application $app;
 
     public function run()
     {
         echo $this->router->dispatch();
+    }
+
+    public function containerGet(string $key, mixed $default = null): mixed
+    {
+        return $this->container[$key] ?? $default;
+    }
+
+    public function containerSet(string $key, mixed $value): void
+    {
+        $this->container[$key] = $value;
     }
 }
