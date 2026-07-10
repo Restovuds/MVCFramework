@@ -1,6 +1,6 @@
 <?php
 /**
- * @param array $post
+ * @var array $post
  */
 ?>
 
@@ -24,7 +24,7 @@
 
                 <div class="mb-3">
                     <label for="slug" class="form-label">Slug</label>
-                    <input type="text"
+                    <input type="text" disabled
                            class="<?= merge_classes('form-control', get_bootstrap_validation_class('slug', $errors ?? [], false)) ?>"
                            name="slug" id="slug" placeholder="Some interesting theme" value="<?= isset($errors) ? old('slug') : spec_chars($post['slug']) ?>">
                     <?= get_error('slug', $errors ?? []); ?>

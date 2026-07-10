@@ -15,7 +15,7 @@ $getLabel = function ($attr) use ($userAttrClass) {
     <div class="row">
         <div class="col-md-6 offset-md-3">
             <h1><?= $title ?></h1>
-            <form method="post" action="<?= base_url('/login') ?>">
+            <form method="post" action="<?= LOGIN_PAGE ?>">
                 <div class="mb-3">
                     <label for="email" class="form-label"><?= $getLabel('email') ?><span class="text-danger">*</span></label>
                     <input type="text"

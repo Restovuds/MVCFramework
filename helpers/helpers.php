@@ -1,7 +1,6 @@
 <?php
 
 use helpers\ErrorHelper;
-use JetBrains\PhpStorm\NoReturn;
 
 function app(): \Ocore\Application
 {
@@ -92,7 +91,6 @@ function merge_classes(...$classes): string
     return implode(' ', $classes);
 }
 
-#[NoReturn]
 function abort(int $code = 404, string|null $error = null, string|null $message = null): \Ocore\View
 {
     if (is_null($error)) {
@@ -119,6 +117,11 @@ function check_auth(): bool
         if (app()->request->getUserAgent() === $ua[1]) {
             return true;
         }
+
+        // logout user if user agent does not match
+        // just a simple security measure to prevent session hijacking
+        session()->remove('user');
+
         return false;
     }
     return false;

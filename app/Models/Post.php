@@ -17,6 +17,8 @@ use Ocore\validation\ValidatorFactory;
  */
 class Post extends BaseModel
 {
+    public const string SCENARIO_EDIT = 'edit';
+
     public static function tableName(): string
     {
         return 'post';
@@ -55,6 +57,14 @@ class Post extends BaseModel
                 'maxFiles'        => 2,
                 'errorOnEachFile' => true,
             ]
+        ];
+    }
+
+    public function scenarios(): array
+    {
+        return [
+            self::SCENARIO_DEFAULT => ['title', 'slug', 'content', 'thumbnail', 'gallery'],
+            self::SCENARIO_EDIT => ['title', 'content'],
         ];
     }
 

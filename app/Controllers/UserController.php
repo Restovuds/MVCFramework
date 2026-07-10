@@ -22,7 +22,7 @@ class UserController extends BaseController
 
             if ($user->save(false)) {
                 FlashHelper::createSuccessAlert("You have successfully registered.");
-                response()->redirect("/login");
+                response()->redirect(LOGIN_PAGE);
             } else {
                 FlashHelper::createErrorAlert("Registration failed due to unknown reasons. Try again later.");
                 response()->redirect("/");

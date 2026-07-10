@@ -51,6 +51,7 @@ class PostController extends BaseController
         db()->findOrFail(Post::tableName(), $id);
 
         $model = new Post();
+        $model->scenario = Post::SCENARIO_EDIT;
         $model->load();
         $model->attributes['id'] = $id;
 
