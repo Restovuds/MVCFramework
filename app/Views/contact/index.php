@@ -8,7 +8,7 @@
     <div class="row">
         <div class="col-md-6 offset-md-3">
             <h1>Contact form page</h1>
-            <form method="post" action="/contact">
+            <form method="post" action="/contact" enctype="multipart/form-data">
 
                 <div class="mb-3">
                     <label for="fullName" class="form-label">Full Name</label>
@@ -16,14 +16,6 @@
                            class="<?= merge_classes('form-control', get_bootstrap_validation_class('fullName', $errors ?? [], false)) ?>"
                            name="fullName" id="fullName" placeholder="John Snow" value="<?= old('fullName') ?>">
                     <?= get_error('fullName', $errors ?? []); ?>
-                </div>
-
-                <div class="mb-3">
-                    <label for="username" class="form-label">username</label>
-                    <input type="text"
-                           class="<?= merge_classes('form-control', get_bootstrap_validation_class('username', $errors ?? [], false)) ?>"
-                           name="username" id="username" placeholder="John_Snow" value="<?= old('username') ?>">
-                    <?= get_error('username', $errors ?? []); ?>
                 </div>
 
                 <div class="mb-3">
@@ -43,6 +35,14 @@
                               id="content" rows="3"
                               placeholder="I am a King of the North!"><?= old('content') ?></textarea>
                     <?= get_error('content', $errors ?? []); ?>
+                </div>
+
+                <div class="mb-3">
+                    <laber for="attachment" class="form-label">Attachment</label>
+                    <input type="file" name="attachment[]" id="attachment"
+                           class="<?= merge_classes('form-control', get_bootstrap_validation_class('attachment', $errors ?? [], false)) ?>"
+                           multiple>
+                    <?= get_error('attachment', $errors ?? []); ?>
                 </div>
 
                 <button type="submit" class="btn btn-primary">Submit</button>

@@ -47,4 +47,9 @@ class Application
     {
         $this->container[$key] = $value;
     }
+
+    public function getMailer()
+    {
+        return new Mailer();
+    }
 }

@@ -19,6 +19,7 @@
   "require": {
     "symfony/var-dumper": "^8.0",
     "ext-pdo": "*",
-    "ext-openssl": "*"
+    "ext-openssl": "*",
+    "phpmailer/phpmailer": "^7.1"
   }
 }

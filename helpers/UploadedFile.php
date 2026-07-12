@@ -98,7 +98,7 @@ class UploadedFile
         return false;
     }
 
-    public static function uploadFile(self $file): false|string
+    public static function uploadFile(self $file, $returnPath = false): false|string
     {
         $ext = $file->getExtension();
         $dir = '/' . date('Y/m/d');
@@ -109,6 +109,9 @@ class UploadedFile
             $file_path = UPLOADS . $dir . DIRECTORY_SEPARATOR . $file_name;
 
             if (move_uploaded_file($file->tmpName, $file_path)) {
+                if ($returnPath) {
+                    return $file_path;
+                }
                 return '/uploads' . $dir . '/' . $file_name;
             } else {
                 throw new \Exception('Failed to move uploaded file.');
